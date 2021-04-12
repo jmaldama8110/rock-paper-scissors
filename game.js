@@ -99,17 +99,63 @@ const playRound = (player, machine) => {
 
 }
 
-let playerSelectionName = prompt("Rock, Paper o Scissors?").toLocaleLowerCase().trim();
+const game = () => {
 
-const playerSelection = fromPromptToId(playerSelectionName);
+    let i = 1;
+    let machineScore = 0;
+    let playerScore = 0;
+    let draws = 0;
+    
+    do {
+        console.log(`Match #${i}`);
+        const playerSelectionName = prompt("Rock, Paper o Scissors?").toLocaleLowerCase().trim();
+    
+        const playerSelection = fromPromptToId(playerSelectionName);
+    
+        if( playerSelection != -1 ){
+            i = i + 1; // only increment when user entry is valid
+            const computerSelection = computerPlay();
+            const result = playRound(playerSelection, computerSelection)  ;
+    
+            if( result >= 0 && result <= 2 ){
+                machineScore = machineScore + 1;
+            }
+            
+            if( result >=4 && result <= 6){
+                playerScore = playerScore + 1;
+            }
+    
+            if( result === 3 ){
+                draws = draws + 1;
+            }
+    
+    
+            const resultName = fromIdToName(result);
+    
+            console.log(fromIdToName(computerSelection) + ' VS ' + fromIdToName(playerSelection) + ' => '+resultName );
+            console.log(`(${result}) ${computerSelection} VS ${playerSelection} = Machine:${machineScore}, Player:${playerScore}, Draw:${draws}`)
+            
+        
+        }
+        
+    } while (i <= 5);
+    
+    console.log('Score:');
+    console.log(`Machine:${machineScore}, Player:${playerScore}, Draw:${draws}`);
+   
+}
 
-const computerSelection = computerPlay();
-
-console.log( fromIdToName(computerSelection) + ' <= VS => ' + fromIdToName(playerSelection));
+game();
 
 
-const result = playRound(playerSelection, computerSelection);
-const resultName = fromIdToName(result);
 
-console.log(resultName)
+
+
+
+
+
+    
+
+
+
 
