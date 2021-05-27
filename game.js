@@ -99,53 +99,83 @@ const playRound = (player, machine) => {
 
 }
 
-const game = () => {
+let matchCount = 0;
 
-    let i = 1;
-    let machineScore = 0;
-    let playerScore = 0;
-    let draws = 0;
-    
-    do {
-        console.log(`Match #${i}`);
-        const playerSelectionName = prompt("Rock, Paper o Scissors?").toLocaleLowerCase().trim();
-    
-        const playerSelection = fromPromptToId(playerSelectionName);
-    
-        if( playerSelection != -1 ){
-            i = i + 1; // only increment when user entry is valid
-            const computerSelection = computerPlay();
-            const result = playRound(playerSelection, computerSelection)  ;
-    
-            if( result >= 0 && result <= 2 ){
-                machineScore = machineScore + 1;
-            }
-            
-            if( result >=4 && result <= 6){
-                playerScore = playerScore + 1;
-            }
-    
-            if( result === 3 ){
-                draws = draws + 1;
-            }
-    
-    
-            const resultName = fromIdToName(result);
-    
-            console.log(fromIdToName(computerSelection) + ' VS ' + fromIdToName(playerSelection) + ' => '+resultName );
-            console.log(`(${result}) ${computerSelection} VS ${playerSelection} = Machine:${machineScore}, Player:${playerScore}, Draw:${draws}`)
-            
+const winnerScore = 3;
+
+let machineScore = 0;
+let playerScore = 0;
+let draws = 0;
+
+
+function game() {
+
+    if ( !(machineScore == winnerScore || playerScore == winnerScore) ) { // if reaches the end of the game, print the score
         
+        matchCount = matchCount + 1; // match # 
+
+        const playerSelection = fromPromptToId(this.getAttribute('id'));
+
+        const computerSelection = computerPlay();
+        const result = playRound(playerSelection, computerSelection);
+
+        if (result >= 0 && result <= 2) {
+            machineScore = machineScore + 1;
         }
+
+        if (result >= 4 && result <= 6) {
+            playerScore = playerScore + 1;
+        }
+
+        if (result === 3) {
+            draws = draws + 1;
+        }
+
+
+        const matchOutcome = document.createElement('div');
+        matchOutcome.textContent = `Match # ${matchCount} -> ${fromIdToName(computerSelection)} VS ${fromIdToName(playerSelection)} => mac(${machineScore}) / pl (${playerScore}) / dw (${draws})`;
         
-    } while (i <= 5);
-    
-    console.log('Score:');
-    console.log(`Machine:${machineScore}, Player:${playerScore}, Draw:${draws}`);
+        const resultContainer = document.querySelector('#resultcontainer');
+        resultContainer.appendChild(matchOutcome);
+
+        if( machineScore == winnerScore || playerScore == winnerScore ){
+            showScore();
+        }
+
+    }
    
+
 }
 
-game();
+function showScore (){
+
+    const score = document.createElement('div');
+
+    if( machineScore > playerScore ){
+        score.style.cssText = "background-color: red; line-height: 2em;"
+        score.textContent = 'You loose :(';
+    }
+    else {
+        score.style.cssText = "background-color: green; line-height: 2em;"
+        score.textContent = 'You win :)';
+    }
+
+
+    const resultContainer = document.querySelector('#resultcontainer');
+    resultContainer.appendChild(score);
+
+    const actions = document.querySelector('#actions');
+    actions.remove();
+
+}
+
+const buttons = document.querySelectorAll('.btn');
+buttons.forEach(e => {
+    e.addEventListener('click', game);
+});
+
+
+// game();
 
 
 
@@ -154,7 +184,7 @@ game();
 
 
 
-    
+
 
 
 
